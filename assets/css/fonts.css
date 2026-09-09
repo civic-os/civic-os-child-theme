@@ -1,0 +1,40 @@
+/*
+ * Self-hosted webfonts. No external origins, so nothing to whitelist in the shared CSP.
+ * Public Sans and JetBrains Mono are both SIL Open Font License 1.1 (see assets/fonts/).
+ */
+
+@font-face {
+	font-family: "Public Sans";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/public-sans-400.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Public Sans";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../fonts/public-sans-600.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Public Sans";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("../fonts/public-sans-700.woff2") format("woff2");
+}
+@font-face {
+	font-family: "JetBrains Mono";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/jetbrains-mono-400.woff2") format("woff2");
+}
+@font-face {
+	font-family: "JetBrains Mono";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../fonts/jetbrains-mono-600.woff2") format("woff2");
+}

@@ -1,0 +1,70 @@
+/*
+ * Civic OS accessibility base.
+ * Applies the Public Sans font cutover (family only — sizes stay with each element
+ * and, later, with the components) plus keyboard focus, skip-link visibility, and
+ * reduced-motion. Nothing here changes heading sizes on existing pages.
+ */
+
+:root {
+	--cos-font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	--cos-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	--cos-focus: #186C90; /* Link Blue — 5.86:1 on white */
+}
+
+/* Font cutover: family only. */
+body,
+button,
+input,
+select,
+textarea,
+h1, h2, h3, h4, h5, h6,
+.elementor-heading-title,
+.elementor-button {
+	font-family: var(--cos-font-body);
+}
+
+/* Visible keyboard focus on every interactive element. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+.elementor-button:focus-visible {
+	outline: 3px solid var(--cos-focus);
+	outline-offset: 2px;
+	border-radius: 3px;
+}
+
+/* Reveal Hello Elementor's skip link when it receives focus. */
+.skip-link:focus,
+a.skip-link:focus {
+	position: fixed;
+	left: 8px;
+	top: 8px;
+	width: auto;
+	height: auto;
+	margin: 0;
+	padding: 10px 16px;
+	clip: auto;
+	clip-path: none;
+	background: #2C5B44; /* CTA Green — white text is 7.82:1 */
+	color: #fff;
+	font-weight: 600;
+	text-decoration: none;
+	border-radius: 0 0 8px 8px;
+	z-index: 100000;
+}
+
+/* Respect a reduced-motion preference for Elementor animations and transitions. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}
