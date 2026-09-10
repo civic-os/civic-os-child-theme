@@ -1,0 +1,88 @@
+name: Release
+
+# Cuts a GitHub Release so the theme's bundled Plugin Update Checker (PUC v5) can
+# surface the update to WordPress. PUC matches the release tag against the
+# `Version:` in style.css, so this workflow keeps the two in lockstep:
+#
+#   - Push to main  -> reads Version from style.css; if v<version> has no release
+#                      yet, creates the tag + Release. Routine flow: bump the
+#                      Version in style.css, commit, push. Nothing else.
+#   - Push a v* tag -> releases that tag, but only after checking it equals the
+#                      Version in style.css (a mismatch would break PUC).
+#   - Manual run    -> same version-driven path as a push to main.
+#
+# It is idempotent: once v<version> is released, further pushes to main no-op
+# until the Version is bumped again.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write # create tags and releases
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the tagged/pushed commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so generated release notes have a diff base
+
+      - name: Resolve version and tag
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # Version declared in the theme header — the value PUC compares against.
+          style_version="$(grep -iE '^[[:space:]]*Version:' style.css | head -n1 \
+            | sed -E 's/.*Version:[[:space:]]*//' | tr -d '[:space:]')"
+          if [ -z "$style_version" ]; then
+            echo "::error file=style.css::Could not read 'Version:' from the theme header."
+            exit 1
+          fi
+
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            # Triggered by a pushed tag: honor it, but it must match style.css.
+            tag="${{ github.ref_name }}"
+            tag_version="${tag#v}"
+            if [ "$tag_version" != "$style_version" ]; then
+              echo "::error::Tag '$tag' does not match style.css Version '$style_version'." \
+                "PUC compares these; a mismatch would break theme updates. Fix one and re-tag."
+              exit 1
+            fi
+          else
+            # Triggered by a push to main or a manual run: derive the tag.
+            tag="v$style_version"
+          fi
+
+          echo "version=$style_version" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Release $tag already exists — nothing to do."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Will create release $tag."
+          fi
+
+      - name: Create the GitHub Release
+        if: steps.resolve.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "${{ steps.resolve.outputs.tag }}" \
+            --target "$GITHUB_SHA" \
+            --title "${{ steps.resolve.outputs.tag }}" \
+            --generate-notes
