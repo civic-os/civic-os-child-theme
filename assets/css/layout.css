@@ -1,0 +1,57 @@
+/*
+ * Civic OS layout base — section vertical rhythm.
+ *
+ * Single source of truth for the top/bottom padding of every top-level
+ * Elementor band on the site. One token governs all pages at once, so
+ * spacing cannot drift page to page. Horizontal gutters stay with each
+ * band; this file owns vertical rhythm only.
+ *
+ * By design this overrides any padding-block a band carries in its own
+ * Elementor settings (the `body` prefix keeps these rules above Elementor's
+ * per-element padding regardless of stylesheet load order). Do not set
+ * top/bottom padding on a top-level band to change section spacing; change
+ * --cos-section-space here instead. A band that needs to breathe more gets
+ * a modifier class (below) in its Elementor "CSS Classes" field, not a
+ * one-off padding value.
+ */
+
+:root {
+	--cos-section-space: 40px;    /* default content band, desktop */
+	--cos-section-space-sm: 26px; /* default content band, <= 767px */
+}
+
+/* Default rhythm for every top-level band. */
+body .e-con.e-parent.e-parent {
+	padding-block: var(--cos-section-space);
+}
+
+@media (max-width: 767px) {
+	body .e-con.e-parent.e-parent {
+		padding-block: var(--cos-section-space-sm);
+	}
+}
+
+/*
+ * Deliberate exceptions. Add one of these to a band's CSS Classes field.
+ * cos-band-hero  — the page's opening band (carries the h1); breathes more.
+ * cos-band-cta   — a prominent call-to-action band (e.g. the green Woven CTA).
+ * cos-band-flush — sits directly against the band above it; no top space.
+ */
+body .e-con.e-parent.cos-band-hero {
+	padding-block: 64px;
+}
+
+body .e-con.e-parent.cos-band-cta {
+	padding-block: 56px;
+}
+
+body .e-con.e-parent.cos-band-flush {
+	padding-top: 0;
+}
+
+@media (max-width: 767px) {
+	body .e-con.e-parent.cos-band-hero,
+	body .e-con.e-parent.cos-band-cta {
+		padding-block: 40px;
+	}
+}
