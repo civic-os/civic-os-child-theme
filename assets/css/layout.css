@@ -67,3 +67,35 @@ body .e-con.e-parent.cos-band-flush {
 body .elementor:not(.elementor-location-header):not(.elementor-location-footer) > .e-con.e-parent.e-parent:first-child {
 	padding-top: var(--cos-hero-top);
 }
+
+/*
+ * A hero opens flush: drop the small top breath the rule above adds, so the
+ * full-bleed gradient meets the header instead of showing a pale band above the
+ * content. The hero's inner content container keeps a little top padding of its
+ * own, so the eyebrow is not jammed against the menu.
+ */
+body .elementor:not(.elementor-location-header):not(.elementor-location-footer) > .e-con.e-parent.cos-band-hero:first-child {
+	padding-top: 0;
+}
+
+/*
+ * Flush full-bleed hero. The opening gradient band breaks out of the page's
+ * content column to span the full viewport width, edge to edge under the
+ * header, regardless of what constrains that column at wide viewports. Only its
+ * width changes; it already sits flush under the header, so vertical position
+ * is untouched. Content inside stays centered by the band's own flex alignment.
+ */
+body .e-con.e-parent.cos-band-hero {
+	width: 100vw;
+	max-width: 100vw;
+	margin-inline: calc(50% - 50vw);
+}
+
+/*
+ * Contain that breakout. 100vw counts the scrollbar's width, which could add a
+ * sliver of horizontal scroll; `clip` (not `hidden`) contains it without turning
+ * the body into a scroll container, so a sticky header keeps working.
+ */
+body {
+	overflow-x: clip;
+}
