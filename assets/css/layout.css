@@ -18,6 +18,7 @@
 :root {
 	--cos-section-space: 40px;    /* default content band, desktop */
 	--cos-section-space-sm: 26px; /* default content band, <= 767px */
+	--cos-hero-top: 16px;         /* top padding of the first band, under the header */
 }
 
 /* Default rhythm for every top-level band. */
@@ -54,4 +55,15 @@ body .e-con.e-parent.cos-band-flush {
 	body .e-con.e-parent.cos-band-cta {
 		padding-block: 40px;
 	}
+}
+
+/*
+ * The first band on a page sits directly under the site header, which already
+ * forms the top boundary; a large top padding there reads as an empty gap below
+ * the menu. Trim the first band's top padding on every page, whatever padding it
+ * otherwise carries (this includes a cos-band-hero opener). Bottom padding is
+ * left to the rules above, so the hero still separates cleanly from what follows.
+ */
+body .elementor:not(.elementor-location-header):not(.elementor-location-footer) > .e-con.e-parent.e-parent:first-child {
+	padding-top: var(--cos-hero-top);
 }
