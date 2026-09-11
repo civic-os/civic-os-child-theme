@@ -79,6 +79,22 @@ body .elementor:not(.elementor-location-header):not(.elementor-location-footer) 
 }
 
 /*
+ * Flush the single/page theme template's structural wrapper. That template
+ * (elementor-location-single) wraps every page's post content in its own boxed
+ * band, which sits directly under the header — above the page's real first
+ * band. Both the --cos-hero-top rule above (it matches this wrapper as a
+ * first-child .elementor band) and the wrapper's own .e-con-inner default
+ * padding land here, showing as a gap below the menu. The page's opening band
+ * already owns the top rhythm, so this wrapper contributes zero top space and
+ * the first content band (its gradient included) meets the header directly.
+ * Higher specificity than the --cos-hero-top rule so the 0 wins.
+ */
+body .elementor.elementor-location-single:not(.elementor-location-header):not(.elementor-location-footer) > .e-con.e-parent.e-parent:first-child,
+body .elementor.elementor-location-single:not(.elementor-location-header):not(.elementor-location-footer) > .e-con.e-parent.e-parent:first-child > .e-con-inner {
+	padding-top: 0;
+}
+
+/*
  * Flush full-bleed hero. The opening gradient band breaks out of the page's
  * content column to span the full viewport width, edge to edge under the
  * header, regardless of what constrains that column at wide viewports. Only its
