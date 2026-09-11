@@ -68,3 +68,23 @@ a.skip-link:focus {
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Accessibility: the decorative light blue (#6BC4EA) is ~1.9:1 with white, below
+   AA. Where it was used as a button/icon background or as link text, recolor to
+   the accessible link blue (#186C90, 5.86:1 with white). Decorative light-blue
+   accents elsewhere are intentionally left alone. */
+
+/* GitHub button in the header (green hover preserved by lower specificity) */
+.civic-header-nav a.github-link {
+	background: #186C90;
+}
+
+/* Footer social icon buttons (white icon on blue) */
+.elementor-location-footer .footer-social a {
+	background: #186C90;
+}
+
+/* Footer inline link text, e.g. the AGPL license link */
+.elementor-location-footer .footer-bottom p a {
+	color: #186C90;
+}
