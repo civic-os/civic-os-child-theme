@@ -88,3 +88,20 @@ a.skip-link:focus {
 .elementor-location-footer .footer-bottom p a {
 	color: #186C90;
 }
+
+/* Footer section headings ("Quick Links", "Our Values", "Get In Touch")
+   — #6BC4EA on #F8F9FA is 1.86:1, well below AA minimum */
+.elementor-location-footer h3 {
+	color: #186C90;
+}
+
+/* Footer social icon — override Elementor inline style specificity */
+.elementor-location-footer .footer-section .footer-social a {
+	background: #186C90 !important;
+}
+
+/* Elementor Forms submit button — white on #6BC4EA is 1.96:1 */
+.elementor-form .elementor-button,
+.elementor-form .elementor-button:hover {
+	background-color: #2C5B44; /* CTA Green — 7.82:1 with white */
+}
