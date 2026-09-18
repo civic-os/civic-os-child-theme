@@ -131,3 +131,11 @@ a.skip-link:focus {
 	white-space: nowrap;
 	border: 0;
 }
+
+/* S2a fix (specificity): the earlier `.elementor-location-footer h3` override
+   ties the footer widget's own inline `.footer-section h3` rule (both 0,1,1) and
+   loses on source order, so the headings stayed light blue (1.86:1). This more
+   specific selector wins. */
+.elementor-location-footer .footer-section h3 {
+	color: #186C90;
+}
