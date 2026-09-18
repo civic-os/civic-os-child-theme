@@ -105,3 +105,29 @@ a.skip-link:focus {
 .elementor-form .elementor-button:hover {
 	background-color: #2C5B44; /* CTA Green — 7.82:1 with white */
 }
+
+/*
+ * WCAG 2.2 AA remediation, part 2 (audit 2026-09-18): keyboard-reachable
+ * dropdowns and a screen-reader-only utility. Contrast fixes are above.
+ */
+
+/* S3 (keyboard reach): the header dropdowns open on hover only; also reveal them
+   when focus lands anywhere inside the item, so keyboard users can tab into the
+   submenu links. Full button-semantics / arrow-key support is a later pass. */
+.civic-header-nav .has-dropdown:focus-within > .dropdown-menu {
+	display: block;
+}
+
+/* Screen-reader-only text (e.g. the "opens in new tab" hints added by JS),
+   in case the parent theme's .screen-reader-text is absent. */
+.screen-reader-text {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}

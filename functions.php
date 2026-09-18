@@ -27,8 +27,26 @@ add_action(
 		wp_enqueue_style( 'civic-os-fonts', $uri . '/assets/css/fonts.css', array(), $ver );
 		wp_enqueue_style( 'civic-os-a11y', $uri . '/assets/css/accessibility.css', array( 'civic-os-fonts' ), $ver );
 		wp_enqueue_style( 'civic-os-layout', $uri . '/assets/css/layout.css', array( 'civic-os-a11y' ), $ver );
+
+		// Accessibility enhancements: semantic landmarks, dropdown/menu ARIA, SVG
+		// labels, new-tab hints. Loaded in the footer; no dependencies.
+		wp_enqueue_script( 'civic-os-a11y-js', $uri . '/assets/js/accessibility.js', array(), $ver, true );
 	},
 	20
+);
+
+/**
+ * Drop the parent theme's Google Fonts stylesheet. Fonts are self-hosted here, and
+ * the shared Content-Security-Policy blocks fonts.googleapis.com anyway, so leaving
+ * it enqueued only produces console errors.
+ */
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		wp_dequeue_style( 'hello-elementor-fonts' );
+		wp_deregister_style( 'hello-elementor-fonts' );
+	},
+	30
 );
 
 /**
