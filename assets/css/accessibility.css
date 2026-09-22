@@ -1,14 +1,19 @@
 /*
  * Civic OS accessibility base.
- * Applies the Public Sans font cutover (family only — sizes stay with each element
- * and, later, with the components) plus keyboard focus, skip-link visibility, and
- * reduced-motion. Nothing here changes heading sizes on existing pages.
+ * Font cutover (Public Sans), keyboard focus, skip-link, reduced-motion, plus a
+ * documented callout component. Colors reference the Elementor kit tokens so the
+ * kit is the single source of truth:
+ *   Primary green  var(--e-global-color-primary)   #3A7859  default interactive (5.2:1)
+ *   CTA Green      var(--e-global-color-cta_green)  #2C5B44  hover / pressed (7.8:1)
+ *   Accent blue    var(--e-global-color-accent)     #6BC4EA  DECORATIVE ONLY
+ * The footer widget owns its own colors (also via these tokens); this file no
+ * longer overrides them.
  */
 
 :root {
 	--cos-font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 	--cos-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	--cos-focus: #186C90; /* Link Blue — 5.86:1 on white */
+	--cos-callout-tint: #EAF6FC; /* pale wash of the decorative light blue, for callouts */
 }
 
 /* Font cutover: family only. */
@@ -23,7 +28,7 @@ h1, h2, h3, h4, h5, h6,
 	font-family: var(--cos-font-body);
 }
 
-/* Visible keyboard focus on every interactive element. */
+/* Visible keyboard focus on every interactive element (Primary green, 5.2:1). */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -32,7 +37,7 @@ textarea:focus-visible,
 summary:focus-visible,
 [tabindex]:focus-visible,
 .elementor-button:focus-visible {
-	outline: 3px solid var(--cos-focus);
+	outline: 3px solid var(--e-global-color-primary, #3A7859);
 	outline-offset: 2px;
 	border-radius: 3px;
 }
@@ -49,7 +54,7 @@ a.skip-link:focus {
 	padding: 10px 16px;
 	clip: auto;
 	clip-path: none;
-	background: #2C5B44; /* CTA Green — white text is 7.82:1 */
+	background: var(--e-global-color-cta_green, #2C5B44); /* white text 7.82:1 */
 	color: #fff;
 	font-weight: 600;
 	text-decoration: none;
@@ -69,57 +74,23 @@ a.skip-link:focus {
 	}
 }
 
-/* Accessibility: the decorative light blue (#6BC4EA) is ~1.9:1 with white, below
-   AA. Where it was used as a button/icon background or as link text, recolor to
-   the accessible link blue (#186C90, 5.86:1 with white). Decorative light-blue
-   accents elsewhere are intentionally left alone. */
-
-/* GitHub button in the header (green hover preserved by lower specificity) */
-.civic-header-nav a.github-link {
-	background: #186C90;
+/* Elementor Forms submit button: Primary green at rest, CTA green on hover.
+   (The old light-blue default was white-on-#6BC4EA at 1.96:1; both greens clear AA.) */
+.elementor-form .elementor-button {
+	background-color: var(--e-global-color-primary, #3A7859);
+}
+.elementor-form .elementor-button:hover,
+.elementor-form .elementor-button:focus {
+	background-color: var(--e-global-color-cta_green, #2C5B44);
 }
 
-/* Footer social icon buttons (white icon on blue) */
-.elementor-location-footer .footer-social a {
-	background: #186C90;
-}
-
-/* Footer inline link text, e.g. the AGPL license link */
-.elementor-location-footer .footer-bottom p a {
-	color: #186C90;
-}
-
-/* Footer section headings ("Quick Links", "Our Values", "Get In Touch")
-   — #6BC4EA on #F8F9FA is 1.86:1, well below AA minimum */
-.elementor-location-footer h3 {
-	color: #186C90;
-}
-
-/* Footer social icon — override Elementor inline style specificity */
-.elementor-location-footer .footer-section .footer-social a {
-	background: #186C90 !important;
-}
-
-/* Elementor Forms submit button — white on #6BC4EA is 1.96:1 */
-.elementor-form .elementor-button,
-.elementor-form .elementor-button:hover {
-	background-color: #2C5B44; /* CTA Green — 7.82:1 with white */
-}
-
-/*
- * WCAG 2.2 AA remediation, part 2 (audit 2026-09-18): keyboard-reachable
- * dropdowns and a screen-reader-only utility. Contrast fixes are above.
- */
-
-/* S3 (keyboard reach): the header dropdowns open on hover only; also reveal them
-   when focus lands anywhere inside the item, so keyboard users can tab into the
-   submenu links. Full button-semantics / arrow-key support is a later pass. */
+/* Keyboard reach: the header dropdowns open on hover; also reveal them when focus
+   lands anywhere inside the item so keyboard users can tab into the submenu. */
 .civic-header-nav .has-dropdown:focus-within > .dropdown-menu {
 	display: block;
 }
 
-/* Screen-reader-only text (e.g. the "opens in new tab" hints added by JS),
-   in case the parent theme's .screen-reader-text is absent. */
+/* Screen-reader-only text (e.g. the "opens in new tab" hints added by JS). */
 .screen-reader-text {
 	position: absolute !important;
 	width: 1px;
@@ -132,10 +103,34 @@ a.skip-link:focus {
 	border: 0;
 }
 
-/* S2a fix (specificity): the earlier `.elementor-location-footer h3` override
-   ties the footer widget's own inline `.footer-section h3` rule (both 0,1,1) and
-   loses on source order, so the headings stayed light blue (1.86:1). This more
-   specific selector wins. */
-.elementor-location-footer .footer-section h3 {
-	color: #186C90;
+/*
+ * Callout / pull-quote component. The light blue is decorative here, so panels
+ * use a pale tint that keeps body text and Primary-green links above AA.
+ * Rule: a link may sit on .cos-callout (pale tint, green link ~4.7:1) but never
+ * on a full-strength #6BC4EA panel, where a green link drops to ~2.7:1 and fails.
+ * Apply the class in the block's Elementor "CSS Classes" field.
+ */
+.cos-callout {
+	background: var(--cos-callout-tint);
+	border-radius: 8px;
+	padding: 20px 24px;
+}
+.cos-callout a {
+	color: var(--e-global-color-primary, #3A7859);
+	font-weight: 600;
+}
+.cos-callout a:hover,
+.cos-callout a:focus {
+	color: var(--e-global-color-cta_green, #2C5B44);
+}
+
+/* Text-only pull quote: may carry the full decorative light blue as a left accent
+   bar, since nothing on it needs to meet text contrast against the blue itself. */
+.cos-pullquote {
+	background: var(--cos-callout-tint);
+	border-left: 4px solid var(--e-global-color-accent, #6BC4EA);
+	border-radius: 0 8px 8px 0;
+	padding: 18px 24px;
+	font-weight: 600;
+	color: var(--e-global-color-text, #484848);
 }
